@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import com.juanhg.eog.listener.EOGListener;
+import com.juanhg.eog.listener.IEOG;
 import com.juanhg.util.Time;
 
 public class EOGModel {
@@ -17,11 +17,6 @@ public class EOGModel {
 	final int STATUS_UP = 5;
 	final int STATUS_BLINK = 6;
 
-	public final int UP_LIMIT = 100;
-	public final int DOWN_LIMIT = -300;
-	public final int LEFT_LIMIT = 600;
-	public final int RIGHT_LIMIT = 600;
-
 	final int RIGHT_SIGNAL = 1;
 	final int LEFT_SIGNAL = 2;
 	final int DOWN_SIGNAL = 3;
@@ -29,6 +24,11 @@ public class EOGModel {
 	final int BLINK_SIGNAL = 5;
 	final int NULL_SIGNAL = 0;
 
+	public int upLimit = 100;
+	public int downLimit = -300;
+	public int leftLimit = -600;
+	public int rightLimit = 600;
+	
 	int status;
 	BufferedReader brR, brL, brD, brU;
 	String RInput, LInput, UInput, DInput;
@@ -39,7 +39,7 @@ public class EOGModel {
 	final double tLimit = 1000;
 	final double itLimit = 400;
 
-	EOGListener listener;
+	IEOG listener;
 
 	public EOGModel(String rightFile, String leftFile, String upFile, String downFile) throws IOException{
 		boolean isSynchronized = false;
@@ -68,7 +68,39 @@ public class EOGModel {
 		t.start();
 	}
 
-	public void simulate(EOGListener listener) throws IOException{
+	public EOGModel(String rightFile, String leftFile, String upFile, String downFile,
+			int rightLimit, int leftLimit, int upLimit, int downLimit) throws IOException{
+		boolean isSynchronized = false;
+
+		brR = new BufferedReader(new FileReader(rightFile));
+		brL = new BufferedReader(new FileReader(leftFile));
+		brU = new BufferedReader(new FileReader(upFile));
+		brD = new BufferedReader(new FileReader(downFile));
+		
+		this.rightLimit = rightLimit;
+		this.leftLimit = leftLimit;
+		this.upLimit = upLimit;
+		this.downLimit = downLimit;
+
+		System.out.println("Sincronizando...");
+
+		while(!isSynchronized){
+			RInput = brR.readLine();
+			LInput = brL.readLine();
+			UInput = brU.readLine();
+			DInput = brD.readLine();
+
+			if(RInput == null && LInput == null && UInput == null && DInput == null){
+				isSynchronized = true;
+			}
+		}
+
+		System.out.println("¡¡SINCRONIZADO!!");
+
+		t = new Time();
+		t.start();
+	}
+	public void simulate(IEOG listener) throws IOException{
 
 		this.listener = listener;
 		if(brR.ready()){
@@ -84,41 +116,41 @@ public class EOGModel {
 			DInput = brD.readLine();
 		}
 
-//		System.out.println(t.getTime());
-		
+		//		System.out.println(t.getTime());
+
 		if(RInput != null ||LInput != null ||UInput != null ||DInput != null ){
 
 			signal = NULL_SIGNAL;
 
 			if(isNumeric(RInput)){
 				rValue = Integer.parseInt(RInput);
-				if(rValue > RIGHT_LIMIT){
+				if(rValue > rightLimit){
 					signal = RIGHT_SIGNAL;
-//					System.out.println("Derecha");
+					//					System.out.println("Derecha");
 				}
 			}
 			if(isNumeric(LInput)){
 				lValue = Integer.parseInt(LInput);
-				if(lValue != -32767 && lValue < LEFT_LIMIT){
+				if(lValue != -32767 && lValue < leftLimit){
 					signal = LEFT_SIGNAL;
-//					System.out.println("Izquierda");
+					//					System.out.println("Izquierda");
 				}
 			}
 			if(isNumeric(UInput)){
 				uValue = Integer.parseInt(UInput);
-				if(uValue > UP_LIMIT){
+				if(uValue > upLimit){
 					signal = UP_SIGNAL;
 					//System.out.println("Arriba");
 				}
 			}
 			if(isNumeric(DInput)){
 				dValue = Integer.parseInt(DInput);
-				if(dValue != -32767 && dValue < DOWN_LIMIT){
+				if(dValue != -32767 && dValue < downLimit){
 					signal = DOWN_SIGNAL;
 					//System.out.println("Abajo");
 				}
 			}
-//			System.out.println(DInput);
+			//			System.out.println(DInput);
 
 			evolve(signal);
 		}
@@ -128,7 +160,7 @@ public class EOGModel {
 		t.pause();
 		double time = t.getTime();
 		t.start();
-			
+
 		switch (status){
 		case STATUS_REST:
 			switch(currentSignal){
@@ -167,7 +199,7 @@ public class EOGModel {
 	}
 
 	private void changeStatusTo(int status){
-//		System.out.println("status:" +  status);
+		//		System.out.println("status:" +  status);
 		t = new Time();
 		t.start();
 		this.status = status;

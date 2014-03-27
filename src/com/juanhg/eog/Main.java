@@ -10,7 +10,7 @@ public class Main{
 		String uFile = args[2];
 		String dFile = args[3];
 		
-		EOGBasicAplication aplication = new EOGBasicAplication(rFile, lFile, uFile, dFile);
-		aplication.run();
+		EOGBasicApplication application = new EOGBasicApplication(rFile, lFile, uFile, dFile);
+		application.run();
 	}
 }

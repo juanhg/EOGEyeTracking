@@ -2,13 +2,13 @@ package com.juanhg.eog;
 
 import java.io.IOException;
 
-import com.juanhg.eog.listener.EOGListener;
+import com.juanhg.eog.listener.IEOG;
 
-public class EOGBasicAplication implements EOGListener {
+public class EOGBasicApplication implements IEOG {
 
 	EOGModel model;
 
-	public EOGBasicAplication(String rFile, String lFile, String dFile, String uFile ) throws IOException{
+	public EOGBasicApplication(String rFile, String lFile, String dFile, String uFile ) throws IOException{
 		model = new EOGModel(rFile, lFile, dFile, uFile);	
 	}
 	
