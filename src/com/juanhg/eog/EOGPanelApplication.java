@@ -12,6 +12,7 @@ import javax.swing.border.LineBorder;
 
 import com.juanhg.eog.listener.IEOG;
 
+
 public class EOGPanelApplication extends JApplet implements IEOG, Runnable {
 	
 	EOGModel model;
