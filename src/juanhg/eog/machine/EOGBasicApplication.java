@@ -1,8 +1,8 @@
-package com.juanhg.eog;
+package juanhg.eog.machine;
 
 import java.io.IOException;
 
-import com.juanhg.eog.listener.IEOG;
+import juanhg.eog.machine.listener.IEOG;
 
 public class EOGBasicApplication implements IEOG {
 

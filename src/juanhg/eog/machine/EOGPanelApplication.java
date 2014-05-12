@@ -1,4 +1,4 @@
-package com.juanhg.eog;
+package juanhg.eog.machine;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
 
-import com.juanhg.eog.listener.IEOG;
+import juanhg.eog.machine.listener.IEOG;
 
 
 public class EOGPanelApplication extends JApplet implements IEOG, Runnable {

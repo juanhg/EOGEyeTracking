@@ -1,11 +1,11 @@
-package com.juanhg.eog;
+package juanhg.eog.machine;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import com.juanhg.eog.listener.IEOG;
-import com.juanhg.util.Time;
+import juanhg.eog.machine.listener.IEOG;
+import juanhg.util.Time;
 
 public class EOGModel {
 

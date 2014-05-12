@@ -1,4 +1,4 @@
-package com.juanhg.eog;
+package juanhg.eog.machine;
 
 import java.io.IOException;
 

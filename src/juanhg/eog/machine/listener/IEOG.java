@@ -1,4 +1,4 @@
-package com.juanhg.eog.listener;
+package juanhg.eog.machine.listener;
 
 import java.util.EventListener;
 
