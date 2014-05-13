@@ -9,13 +9,13 @@ import java.io.IOException;
 
 public class NeuralMain {
 	
-	private final String verticalFile = "pahtfichero";
-	private final String horizontalFile = "PathHorizontal";
-	private final String GTFile = "PathGazeTrackerFile";
-	private final String inputs = "path";
-	private final String outputs = "path";
-	private final int GTMeasureSize = 100;
-	private final int neurobitMeasureSize = 1000;
+	private final String verticalFile = "D:\\lFile.txt";
+	private final String horizontalFile = "D:\\uFile.txt";
+	private final String GTFile = "D:\\lROI.txt";
+	private final String inputs = "D:\\inputs.txt";
+	private final String outputs = "D:\\outputs.txt";
+	private final int GTMeasureSize = 5;
+	private final int neurobitMeasureSize = 5;
 	private final int topLimit = 400;
 	private final int botLimit = -400; 
 	
@@ -51,21 +51,31 @@ public class NeuralMain {
 	private void genNeuralFiles(int n) throws NumberFormatException, IOException{
 		double vNeurobitMeasure = 0.0;
 		double hNeurobitMeasure = 0.0;
-		int eyeX, eyeY;
+		double eyeX, eyeY;
 		int vTendency, hTendency;
 		double vMeasure, hMeasure;
+		String aux;
 		
 		for(int measure = 0; measure < n; ++measure){
 			vNeurobitMeasure = 0.0;
 			hNeurobitMeasure = 0.0;
 			vTendency = hTendency = 0;
 			eyeY = eyeX = 0;
+			vMeasure = hMeasure = 0;
 			
-			for(int j = 0; j < neurobitMeasureSize; ++j){
-				vMeasure = Double.parseDouble(verticalReader.readLine());
-				hMeasure = Double.parseDouble(horizontalReader.readLine());
-				vNeurobitMeasure += vMeasure;
-				hNeurobitMeasure += hMeasure;
+			int x = 0;
+			while(x < neurobitMeasureSize){
+				aux = verticalReader.readLine();
+				if(aux != null){
+					vMeasure = Double.parseDouble(aux);
+					vNeurobitMeasure += vMeasure;
+					x++;
+				}
+				aux = horizontalReader.readLine();
+				if(aux != null){
+					hMeasure = Double.parseDouble(aux);
+					hNeurobitMeasure += hMeasure;
+				}
 				
 				if(vTendency == 0 && vMeasure >= topLimit){
 					vTendency = 1;
@@ -83,16 +93,21 @@ public class NeuralMain {
 			vNeurobitMeasure /= neurobitMeasureSize;
 			hNeurobitMeasure /= neurobitMeasureSize;
 			
-			for(int j = 0; j < GTMeasureSize; j++){
-				if(j == GTMeasureSize/2){
-					eyeX = Integer.parseInt(GTReader.readLine());
-					eyeY = Integer.parseInt(GTReader.readLine());
-				}
-				else{
-					GTReader.readLine();
-					GTReader.readLine();
+			int p = 0;
+			while(p < GTMeasureSize){
+				String aux1 = GTReader.readLine();
+				String aux2 = GTReader.readLine();
+				if(aux1 != null && aux2 != null){
+					p++;
+					if(p == GTMeasureSize/2){
+						eyeX = Double.parseDouble(aux1);
+						eyeY = Double.parseDouble(aux2);
+					}
 				}
 			}
+			System.out.println(vTendency + " " + vNeurobitMeasure + " " 
+	                + hTendency + " " + hNeurobitMeasure);
+			System.out.println(eyeX + " " + eyeY);
 			inputWriter.write(vTendency + " " + vNeurobitMeasure + " " 
 			                + hTendency + " " + hNeurobitMeasure);
 			outputWriter.write(eyeX + " " + eyeY);
@@ -110,6 +125,7 @@ public class NeuralMain {
 	public static void main (String [ ] args) throws IOException{
 		NeuralMain neural = new NeuralMain();
 		neural.synchronize();
+		neural.genNeuralFiles(10);
 		neural.close();
 	}
 }
